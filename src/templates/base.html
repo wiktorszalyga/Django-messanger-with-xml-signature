@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<meta charset="utf-8" />
+	<title>BUS Projekt</title>
+	<meta name="Paweł Rurka 293264, Wiktor Szałyga 293273" />
+	<meta name="keywords" content="projekt,bus,rurka,szalyga,wiktor,pawel" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta charset="utf-8">
+</head>
+<body>
+  <table width="1000" align="center">
+    <tr>
+      <td colspan="3" align="center" bgcolor="Gray">
+        <h1>Bezpieczeństwo usług w sieciach - Projekt</h1>
+      </td>
+	</tr>
+    <tr>
+      <td width="140" align="left" bgcolor="LightGray"  style="border:2px Black;">
+			<br />
+			<a href="{% url 'message' %}">message</a>
+            <br />
+            <br />
+            <a href="{% url 'home' %}">home</a>
+            <br />
+            <br />
+			<a href="{% url 'logout' %}">logout</a>
+            <br />
+            <br />
+            <a href="{% url 'incoming' %}">incoming</a>
+            <br />
+            <br />
+            <a href="{% url 'settings' %}">settings</a>
+            <br />
+
+       </td>
+      <td width="680" align="center" bgcolor="LightGray">
+        {% block content %}
+        {% endblock %}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" align="center" bgcolor="Gray">
+        Wiktor Szałyga 293273, Paweł Rurka 293264
+      </td>
+	</tr>
+    </table>
+</body>
+</html>

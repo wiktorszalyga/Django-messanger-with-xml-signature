@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+{% if user.is_authenticated %}
+    {% if object.user_to == user %}
+
+        <h2>{{ object.user_from }}</h2>
+        <h1>{{ object.text }}</h1>
+        <a href="{% url 'download' object.id %}">Click here</a>
+        <br />
+        <br />
+        <br />
+        <h1>{{ info }}</h1>
+        <br />
+        <a href="{% url 'verify' object.id %}"> Verify</a>
+    {% else %}
+    <h4>SORRY YOU DO NOT HAVE ACCESS... SORRY</h4>
+    {% endif %}
+
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a> |
+  <a href="{% url 'signup' %}">signup</a>
+{% endif %}
+{% endblock %}
