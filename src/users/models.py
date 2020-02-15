@@ -40,4 +40,3 @@ class Permission(models.Model):
 
     class Meta:
         unique_together = (('user', 'user_key'),)
-

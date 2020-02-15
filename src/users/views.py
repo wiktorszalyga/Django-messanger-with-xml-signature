@@ -26,12 +26,10 @@ def user_registretion_view(request):
         if my_form.is_valid():
             username, email, password = fromUser(**my_form.cleaned_data)
             key = certyficat.return_key_core()
-
             obj = CustomUser.objects.create(username=username,
                                             email=email, password=hash.make_password(password=password))
             obj.private_key = certyficat.return_private_key(key)
             obj.save()
-
             Key.objects.create(user=obj, public_key=certyficat.return_public_key(key))
             return redirect('http://127.0.0.1:8000/users/login')
         else:
@@ -43,9 +41,6 @@ def user_registretion_view(request):
 
 def user_message_view(request):
     message_form = MessageForm()
-    print(type(message_form))
-    print(type(PermissionForm))
-    print(type(Message.objects.all()))
 
     if request.method == "POST":
         message_form = MessageForm(request.POST, request.FILES)
@@ -78,6 +73,7 @@ def user_incoming_message_view(request):
 
 def user_dynamic_incoming_message_view(request, id):
     obj = Message.objects.get(id=id)
+   # key_form = MessageOwnPublicKey(request.FILES)
     context = {
         "object": obj
     }
@@ -90,8 +86,8 @@ def user_incoming_message_verify(request, id):
     user_key_id = Key.objects.get(user=user_from)
     if Permission.objects.filter(user=request.user, user_key=user_key_id).first():
         key_object = Key.objects.get(user=obj.user_from)
-        public_key = (key_object.public_key).tobytes()
-        sign = (obj.sign_data).tobytes()
+        public_key = key_object.public_key.tobytes()
+        sign = obj.sign_data.tobytes()
         try:
             report = signature.verify_sign(sign, public_key)
             print(report.signed_xml)
@@ -117,12 +113,6 @@ def user_incoming_message_file_view(request, id):
 
         f = open(obj.contain.path, 'rb')
         file_to_read = File(f)
-
-        #file = request.FILES[obj.contain.name].name
-        #print(type(file))
-        #print(type(file_to_read))
-        #file_to_read = (file_to_read).tobytes()
-        #print(type(file_to_read))
         return HttpResponse(file_to_read, content_type='xml')
     else:
         raise Http404
@@ -135,7 +125,8 @@ def user_settings(request):
         if settings_form.is_valid():
             if request.user.is_authenticated:
                 checking_user = settings_form.cleaned_data['user']
-                if Permission.objects.filter(user=checking_user).first():
+                checking_key = Key.objects.get(user=request.user)
+                if Permission.objects.filter(user=checking_user, user_key=checking_key).first():
                     return HttpResponse("<h3>This user have acces to your public key</h3>")
                 else:
                     obj_key = Key.objects.get(user=request.user)
