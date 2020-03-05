@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'xmlSign.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Sign',
-        'USER': 'Szalwik',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        "PORT": '5432',
+        'NAME': '*****',
+        'USER': '*****',
+        'PASSWORD': '****',
+        'HOST': '*****',
+        "PORT": '****',
     }
 }
 
