@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 
-
-
 {% block content %}
 {% if user.is_authenticated %}
     {% if object.user_to == user %}
-
         <h2>{{ object.user_from }}</h2>
         <h1>{{ object.text }}</h1>
         <a href="{% url 'download' object.id %}">Click here</a>

@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b6^a9%bwm@zr$6(-agr(*evlz##q25hxv=hj50zc#ut7avw%)p'
+SECRET_KEY = os.environ.get('SECRET_KEY_XML')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'xmlSign.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '*****',
-        'USER': '*****',
-        'PASSWORD': '****',
-        'HOST': '*****',
-        "PORT": '****',
+        'NAME': os.environ.get('DB_NAME_XML'),
+        'USER': os.environ.get('DB_USER_XML'),
+        'PASSWORD': os.environ.get('DB_PASSWORD_XML'),
+        'HOST': os.environ.get('DB_HOST_XM;'),
+        'PORT': '5432',
     }
 }
 

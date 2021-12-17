@@ -1,16 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db import models
 from django.conf import settings
-import x509ceryficat as certyficat
 
 
-
-# Create your models here.
 class CustomUser(AbstractUser):
 
-    pass
-    # add additional fields in here
     private_key = models.BinaryField(null=True, blank=True, unique=True)
 
     def __str__(self):
@@ -30,9 +24,11 @@ class Message(models.Model):
     def get_absolute_url(self):
         return f"/incoming/{self.id}/"
 
+
 class Key(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, primary_key=True, on_delete=models.CASCADE, blank=False, null=False)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True, on_delete=models.CASCADE, blank=False, null=False)
     public_key = models.BinaryField(unique=True, blank=False, null=False)
+
 
 class Permission(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,unique=False, on_delete=models.CASCADE, blank=False, null=False)

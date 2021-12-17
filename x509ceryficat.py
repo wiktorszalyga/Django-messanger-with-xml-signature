@@ -2,9 +2,6 @@ from datetime import datetime, timedelta
 import ipaddress
 
 
-
-
-
 def generate_selfsigned_cert(hostname, ip_addresses=None, key=None):
     from cryptography import x509
     from cryptography.x509.oid import NameOID
@@ -13,7 +10,7 @@ def generate_selfsigned_cert(hostname, ip_addresses=None, key=None):
     from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.primitives.asymmetric import rsa
 
-    # Generate our key
+    # Generate key
     if key is None:
         key = rsa.generate_private_key(
             public_exponent=65537,
@@ -24,7 +21,6 @@ def generate_selfsigned_cert(hostname, ip_addresses=None, key=None):
     name = x509.Name([
         x509.NameAttribute(NameOID.COMMON_NAME, hostname)
     ])
-
 
     alt_names = [x509.DNSName(hostname)]
 
@@ -58,13 +54,16 @@ def generate_selfsigned_cert(hostname, ip_addresses=None, key=None):
 
     return cert_pem, key_pem, key
 
+
 def return_private_key(key):
     cert_pem, key_pem, key_core = generate_selfsigned_cert('localhost', key=key)
     return key_pem
 
+
 def return_public_key(key):
     cert_pem, key_pem, key_core = generate_selfsigned_cert('localhost', key=key)
     return cert_pem
+
 
 def return_key_core():
     cert_pem, key_pem, key = generate_selfsigned_cert('localhost')

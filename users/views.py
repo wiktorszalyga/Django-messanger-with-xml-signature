@@ -1,15 +1,23 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
-from .forms import CustomUserCreationForm, MessageForm, PermissionForm
-from .models import CustomUser, Key, Message, Permission
 from django.core.files import File
-from django.core.files.base import ContentFile
-import signature
-import x509ceryficat as certyficat
 from django.contrib.auth import hashers as hash
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
+from django.http import Http404
 from cryptography.exceptions import InvalidSignature
+
+from .forms import CustomUserCreationForm
+from .forms import MessageForm
+from .forms import PermissionForm
+from .models import CustomUser
+from .models import Key
+from .models import Message
+from .models import Permission
+import x509ceryficat as certyficat
+import signature
+
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -17,27 +25,25 @@ class SignUpView(CreateView):
     template_name = 'signup.html'
 
 
-def user_registretion_view(request):
+def user_registration_view(request):
     my_form = CustomUserCreationForm()
-
 
     if request.method == "POST":
         my_form = CustomUserCreationForm(request.POST)
         if my_form.is_valid():
-            username, email, password = fromUser(**my_form.cleaned_data)
+            username, email, password = from_user(**my_form.cleaned_data)
             key = certyficat.return_key_core()
             obj = CustomUser.objects.create(username=username,
                                             email=email, password=hash.make_password(password=password))
             obj.private_key = certyficat.return_private_key(key)
             obj.save()
             Key.objects.create(user=obj, public_key=certyficat.return_public_key(key))
-            return redirect('http://127.0.0.1:8000/users/login')
-        else:
-            print(my_form.errors)
+            return redirect('/users/login')
     context = {
         "form": my_form
     }
     return render(request, "signup.html", context)
+
 
 def user_message_view(request):
     message_form = MessageForm()
@@ -52,7 +58,7 @@ def user_message_view(request):
 
                 f = open(message.contain.path, 'rb')
                 file_to_sign = File(f)
-                private_key = (request.user.private_key).tobytes()
+                private_key = request.user.private_key.tobytes()
                 obj = Message.objects.get(id=message.pk)
                 sign_file = signature.create_sign(private_key, file_to_sign)
                 obj.sign_data = sign_file
@@ -63,6 +69,7 @@ def user_message_view(request):
     }
     return render(request, 'message.html', context)
 
+
 def user_incoming_message_view(request):
     queryset = Message.objects.all().filter(user_to=request.user)
     context = {
@@ -71,16 +78,16 @@ def user_incoming_message_view(request):
     }
     return render(request, 'incoming.html', context)
 
+
 def user_dynamic_incoming_message_view(request, id):
     obj = Message.objects.get(id=id)
-   # key_form = MessageOwnPublicKey(request.FILES)
     context = {
         "object": obj
     }
     return render(request, 'message_detail.html', context)
 
+
 def user_incoming_message_verify(request, id):
-    information = 'Verification...'
     obj = Message.objects.get(id=id)
     user_from = obj.user_from
     user_key_id = Key.objects.get(user=user_from)
@@ -89,13 +96,10 @@ def user_incoming_message_verify(request, id):
         public_key = key_object.public_key.tobytes()
         sign = obj.sign_data.tobytes()
         try:
-            report = signature.verify_sign(sign, public_key)
-            print(report.signed_xml)
+            signature.verify_sign(sign, public_key)
             information = "Sign is correct!"
         except InvalidSignature:
             information = "Negative result!"
-
-
     else:
         information = 'You do not have permission to know public key of this user '
 
@@ -105,8 +109,8 @@ def user_incoming_message_verify(request, id):
     }
     return render(request, 'message_detail.html', context)
 
-def user_incoming_message_file_view(request, id):
 
+def user_incoming_message_file_view(request, id):
 
     obj = Message.objects.get(id=id)
     if request.user == obj.user_to:
@@ -116,6 +120,7 @@ def user_incoming_message_file_view(request, id):
         return HttpResponse(file_to_read, content_type='xml')
     else:
         raise Http404
+
 
 def user_settings(request):
     settings_form = PermissionForm()
@@ -138,7 +143,8 @@ def user_settings(request):
     }
     return render(request, 'settings.html', context)
 
-def fromUser(username, email, password1, password2):
+
+def from_user(username, email, password1, password2):
     return username, email, password1
 
 

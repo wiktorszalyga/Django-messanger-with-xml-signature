@@ -1,5 +1,6 @@
 from lxml import etree as ETL
-from signxml import XMLSigner, XMLVerifier
+from signxml import XMLSigner
+from signxml import XMLVerifier
 
 
 def create_sign(private_key, file):
@@ -8,6 +9,7 @@ def create_sign(private_key, file):
     string_signed_xml = ETL.tostring(signed_xml_obj)
 
     return string_signed_xml
+
 
 def verify_sign(signed_data, public_key):
     to_verify = ETL.fromstring(signed_data)

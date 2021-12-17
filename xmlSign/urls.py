@@ -16,12 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
-from users.views import user_registretion_view, user_message_view, user_incoming_message_view, user_dynamic_incoming_message_view, user_incoming_message_file_view, user_incoming_message_verify,  user_settings
+from users.views import user_registration_view, user_message_view, user_incoming_message_view, user_dynamic_incoming_message_view, user_incoming_message_file_view, user_incoming_message_verify,  user_settings
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('admin/', admin.site.urls),
-    path('sign/', user_registretion_view, name='signup'),
+    path('sign/', user_registration_view, name='signup'),
     path('users/', include('django.contrib.auth.urls')),
     path('message/',user_message_view, name='message'),
     path('incoming/', user_incoming_message_view, name='incoming'),
